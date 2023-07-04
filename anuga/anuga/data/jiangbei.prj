@@ -1,0 +1,9 @@
+Projection    UTM
+Zone          50
+Datum         D_WGS_1984
+Zunits        NO
+Units         METERS
+Spheroid      GRS80
+Xshift        0.0000000000
+Yshift        0.0000000000
+Parameters

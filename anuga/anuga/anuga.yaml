@@ -1,0 +1,27 @@
+domain_type: outline
+shape: [3, 3]
+size: [3., 3.]
+boundary_filename: 'data/outline.csv'
+elevation_filename: 'data/raster.asc'
+output_filename: 'sww_bmi'
+output_timestep: 5
+boundary_conditions:
+    'side': Reflective
+    'top': [Dirichlet, 1528, 0, -4.]
+    'bottom': [Dirichlet, 1520, 0, 0]
+boundary_tags:
+    'side': [0,1,2,4]
+    'top': [3]
+    'bottom': [5]
+maximum_triangle_area: 200
+initial_flow_depth: 10
+interior_polygon_filename: 'data/inner_polygon.csv'
+interior_polygon_triangle_area: 100
+toggle_sediment_transport: TRUE
+inflow_sediment_concentration: 0.01
+initial_sediment_concentration: 0.01
+toggle_vegetation_drag: False
+vegetation_stem_diameter: 0.01
+vegetation_stem_spacing: 0.4
+Mannings_n_parameter: 0.03
+
