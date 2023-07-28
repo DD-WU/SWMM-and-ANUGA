@@ -47,7 +47,6 @@ int main() {
 //[spatial and time]
 	//read anuga time
 	anuga_time = jiangbei.attr("get_current_time_ANUGA")().cast<double>();
-
 	//read swmm time
 	get_current_time_swmm(&ElapsedTime);
 	swmm_t = ElapsedTime * MSECperDAY / 1000.0;
@@ -67,6 +66,7 @@ int main() {
 //[LOOP]
 	while (swmm_t > 0||start_flag )
 	{
+//[data exchange]
 		start_flag = false;
 		if (swmm_t > anuga_time) {
 			jiangbei.attr("update_until")(swmm_t);
@@ -80,7 +80,7 @@ int main() {
 		}
 		else
 		{
-//[data exchange]
+
 			for (int i = 0; i < p_number; i++) p_val[i] = 0;
 			set_inflow_swmm(q_in);
 			get_overflow_swmm(p_val);
@@ -115,9 +115,6 @@ int main() {
 						if (stage - elevation >= 0) {
 							q_j = Tools::waterDepthToInflow(stage - elevation, 0.4, 0.75);
 						}
-						else
-						{
-						}
 						q_in[i] += q_j;
 						jiangbei.attr("set_rate_ANUGA")("name"_a = PS_name + i * 80, "value"_a = -q_j);
 					}
@@ -125,7 +122,6 @@ int main() {
 			}
 
 //[update]
-
 			update_swmm(ElapsedTime);
 			jiangbei.attr("update_until")(swmm_t);
 			get_current_time_swmm(&ElapsedTime);
@@ -136,6 +132,10 @@ int main() {
 //[finialize]
 	finalize_swmm();
 	jiangbei.attr("finalize_ANUGA")();
+
+
+
+
 	return 0;
 
 }
