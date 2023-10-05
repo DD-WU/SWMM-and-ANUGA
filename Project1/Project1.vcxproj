@@ -91,19 +91,25 @@
     <IncludePath>D:\miniconda3\envs\anuga_230226\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>true</VcpkgEnabled>
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\miniconda3\envs\anuga_env\include;F:\SWMM_lisflood\xiashenshiyan\LISFLOOD_Lib\src;F:\SWMM_lisflood\xiashenshiyan\SWMM_Lib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\miniconda3\envs\anuga_230226\include;F:\SWMM_lisflood\xiashenshiyan\LISFLOOD_Lib\src;F:\SWMM_lisflood\xiashenshiyan\SWMM_Lib\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>lisflood.lib;SWMM_Lib.lib;python39_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\miniconda3\envs\anuga_env\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\miniconda3\envs\anuga_230226\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackReserveSize>1000000000</StackReserveSize>
+      <LargeAddressAware>false</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +142,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SWMM_Lib.lib;python39.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SWMM_Lib.lib;python39_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>100000000000</StackReserveSize>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,7 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sw_anu.cpp" />
+    <ClCompile Include="model interaction hub.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="Tools.cpp" />
   </ItemGroup>

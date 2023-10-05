@@ -21,7 +21,7 @@
     <ClCompile Include="time.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="sw_anu.cpp">
+    <ClCompile Include="model interaction hub.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

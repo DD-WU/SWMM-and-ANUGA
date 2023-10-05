@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 """Basic Model Interface implementation for anuga."""
-
-import types
 import anuga
 import numpy as np
 import scipy
@@ -25,6 +23,7 @@ class BmiAnuga(Bmi):
         self.elevation={}
         self.rate_operator={}
         self.area_map={}
+        self.rain={}
     """
     process interface
     """
@@ -36,10 +35,10 @@ class BmiAnuga(Bmi):
         filename : str, optional
             Path to name of input file.
         """
-        
+
         with open(filename, 'r') as file_obj:
             params = yaml.load(file_obj,Loader=yaml.FullLoader)
-        
+
         default_params = {'domain_type':'square',
                           'shape':(10.,5.),
                           'size':(10.,5.),
@@ -91,6 +90,7 @@ class BmiAnuga(Bmi):
                 "The boundary tag names don't match the boundary "
                 "condition names. Check that the two dictionaries use "
                 "the same boundary names.")
+
         self._anuga = AnugaSolver(params)
         self.create_rainfall()
         self.create_pipe_dict()
@@ -131,6 +131,56 @@ class BmiAnuga(Bmi):
     """
     data interface
     """
+    def create_rainfall(self,delimiter=",",polygon=None):
+        rain_timeseries = scipy.genfromtxt(
+            self._anuga._rainfall, delimiter=',', skip_header=1)
+        # Adjust starttime
+        rain_timeseries[:, 0] = rain_timeseries[:, 0]
+
+        # Convert units to m/s (from mm/hr)
+        rain_timeseries[:, 1] = rain_timeseries[:, 1] / (3600. * 1000.)
+
+        # Sanity check
+        assert rain_timeseries[:, 1].min() >= 0., 'Negative rainfall input'
+
+        # Make interpolation function and add to ANUGA as operator
+        if rain_timeseries[:, 1].max() >= 0.:
+            myrain = scipy.interpolate.interp1d(
+                rain_timeseries[:, 0], rain_timeseries[:, 1],
+                kind='cubic')
+            anuga.operators.rate_operators.Rate_operator(
+                self._anuga.domain, rate=myrain, polygon=polygon, label= self._anuga._rainfall)
+        return
+
+    def create_elevation_dict(self):
+        for key,value in self.regions.items():
+            self.elevation[key] = float(value.domain.quantities['elevation'].centroid_values[value.indices])
+    def create_pipe_dict(self,radius=100):
+        region_temp = open(self._anuga._pipe_Index_Cord)
+        lines = region_temp.readlines()
+        region_temp.close()
+        t={}
+        i=0
+        for line in lines:
+            fields = line.split(',')
+            r=anuga.Region(self._anuga.domain,center=(float(fields[0]),float(fields[1])),radius=radius,capture=True)
+            t[fields[2].strip()]= r
+            i+=1
+            if i==275:
+                print()
+            print(fields[2].strip())
+        self.regions=t
+
+
+    def create_rate_dict(self):
+        # 为了方便监测rate_operator,因此这边注释掉，放到region中
+        for key ,value in self.regions.items():
+            rate = anuga.Rate_operator(self._anuga.domain, rate=0, indices=value.indices)
+            self.rate_operator[key] = rate
+
+    def create_area_dict(self):
+        for key, value in self.regions.items():
+            self.area_map[key]=float(value.areas[value.indices])
     def get_start_time_ANUGA(self):
         """Start time of model."""
         return 0.

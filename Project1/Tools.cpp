@@ -1,18 +1,23 @@
 ﻿#include "Tools.h"
 #include"bmi_swmm.h"
 #define g 9.8
-#define C 0.5
+#define C 0.2
 #define PI 3.1415926
-double Tools::waterDepthToInflow(double waterDepth, double A, double C1) {
+double Tools::waterDepthToInflow(double waterDepth, double A, double C1, double flag) {
+	if (flag > 0)
+	{
+		return 0;
+	}
 	double r = sqrt(A / PI);
-	if (r / waterDepth > C1) {
-		return C * 2 * PI * r * sqrt(2 * g * waterDepth) * waterDepth; //m³/s
+	if (r / waterDepth < C1) {
+		double a = C * 2 * PI * r * sqrt(2 * g * waterDepth) * waterDepth; //m³
+		return a;
 	}
 	else
 	{
-		return C * A * sqrt(2 * g * waterDepth); //m³/s
+		double a = C * A * sqrt(2 * g * waterDepth);
+		return a;
 	}
-
 }
 
 int Tools::readSWMMPoint(char* inputFile, char*& PS_name) {
